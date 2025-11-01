@@ -2,7 +2,6 @@ import { Routes } from "@angular/router";
 import { authGuard } from "./auth.guard";
 import { loginGuard } from "./login.guard";
 
-
 export const routes: Routes = [
   {
     path: "",
@@ -39,5 +38,13 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
   },
-];
 
+  {
+    path: "about",
+    loadComponent: () =>
+      import("./component/task/about/about.component").then(
+        (c) => c.AboutComponent
+      ),
+    canActivate: [authGuard],
+  },
+];

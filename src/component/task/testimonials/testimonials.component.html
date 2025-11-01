@@ -11,53 +11,33 @@
   </div>
 
   <div class="container">
-    <div class="row align-items-center pt-5 pb-3">
-      <div class="col-lg-4 col-11">
-        <div class="tm-brand-container tm-bg-white">
-          <div class="tm-brand-texts">
-            <h1 class="text-uppercase tm-brand-name">Hey musician</h1>
-            <p class="small">lets share your beautiful art with us</p>
-          </div>
-        </div>
-      </div>
+    <app-header></app-header>
 
-      <div class="col-lg-8 col-1">
-        <div class="tm-nav">
-          <nav class="navbar navbar-expand-lg navbar-light tm-bg-white tm-navbar">
-            <div class="collapse navbar-collapse">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link" href="/dashboard">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/create">Create</a>
-                </li>
-                <li class="nav-item active">
-                  <div class="tm-nav-link-highlight"></div>
-                  <a class="nav-link" href="/testimonials">Show the results</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-        </div>
-      </div>
-    </div>
 
     <div class="row" *ngIf="!isLoading">
       <div class="col-12 text-center">
         <div class="sort-div">
-          <label for="sortByDate">Sort by Date:</label>
+          <label for="sortByDate">مرتب سازی بر اساس تاریخ:</label>
           <select id="sortByDate" (change)="sortPosts($any($event.target).value)">
-            <option value="new">newest</option>
-            <option value="old">oldest</option>
+            <option value="new">جدید ترین پست</option>
+            <option value="old">قدیمی ترین پست</option>
           </select>
         </div>
-        <input type="text" class="form-control" id="searchInput" placeholder="search..."
+        <input type="text" class="form-control" id="searchInput" placeholder="جست و جو..."
           (input)="searchPosts($any($event.target).value)" />
 
         <div class="posts">
           <div *ngFor="let post of pagedPosts" class="post">
             <div class="d-flex justify-content-between w-100 p-5">
+
+              <div class="d-flex flex-column align-items-center p-4">
+                <img *ngIf="post.imageUrl" [src]="post.imageUrl" class="rounded mb-3"
+                  style="max-width: 400px; border-radius: 12px;" />
+              </div>
+
+
+
+
               <div class="d-flex align-items-start flex-column">
                 <h1 *ngIf="editingPostId !== post.id">{{ post.instrument }}</h1>
                 <input *ngIf="editingPostId === post.id" type="text" class="form-control mb-2"
@@ -66,34 +46,14 @@
                 <p *ngIf="editingPostId !== post.id">{{ post.description }}</p>
                 <textarea *ngIf="editingPostId === post.id" class="form-control mb-2" rows="3"
                   [(ngModel)]="tempPost.description"></textarea>
-              </div>
 
-              <div class="d-flex flex-column align-items-start">
-                <span *ngIf="editingPostId !== post.id">By: {{ post.name }}</span>
+                <span *ngIf="editingPostId !== post.id">قیمت: {{ post.year }} تومان</span>
                 <div *ngIf="editingPostId === post.id" class="form-group w-100 mb-2">
-                  <input type="text" class="form-control" placeholder="Author" [(ngModel)]="tempPost.name" />
-                </div>
-
-                <span *ngIf="editingPostId !== post.id">Experience: {{ post.year }} years</span>
-                <div *ngIf="editingPostId === post.id" class="form-group w-100 mb-2">
-                  <input type="number" class="form-control" placeholder="Experience (years)"
-                    [(ngModel)]="tempPost.year" />
+                  <input type="number" class="form-control" placeholder="قیمت (تومان)" [(ngModel)]="tempPost.year" />
                 </div>
                 <span>{{ post.date | date:'medium' }}</span>
 
                 <div class="d-flex flex-column mb-2">
-                  <!-- location -->
-                  <div class="d-flex flex-column mb-2">
-                    <button *ngIf="post.latitude && post.longitude" class="btn btn-sm btn-outline-secondary my-2"
-                      (click)="showCoordinates(post)">
-                      <i class="bi bi-map"></i> Show on Map
-                    </button>
-                  </div>
-
-                  <button class="btn btn-sm btn-outline-primary my-4" (click)="toggleLike(post)">
-                    {{ hasLiked(post) ? '❤️' : '🤍 Like' }}
-                    <span class="badge bg-secondary ms-2">{{ post.likes?.count || 0 }}</span>
-                  </button>
 
                   <button *ngIf="isPostOwner(post) && editingPostId !== post.id" class="btn btn-sm btn-outline-primary"
                     (click)="startEditing(post)"> Edit </button>
@@ -106,45 +66,12 @@
                     class="btn btn-sm btn-outline-primary my-4" (click)="cancelEdit()"> Cancel </button>
 
                   <button *ngIf="isPostOwner(post)" class="btn btn-sm btn-outline-primary my-4"
-                    (click)="deletePost(post.id)"> Delete </button>
+                    (click)="deletePost(post.id)"> Delete
+                  </button>
                 </div>
-              </div>
-            </div>
 
-            <div class="d-flex justify-content-between w-100">
-              <div class="comments mt-3">
-                <h5>Comments:</h5>
-                <div *ngFor="let comment of getComments(post.id)" class="comment p-2 mb-2 tm-bg-black">
-                  <p>{{ comment.message }}</p>
-                  <small>- {{ comment.name }} at {{ comment.date | date:'medium' }}</small>
-                </div>
               </div>
 
-              <form class="mt-3" (submit)="addComment(post); $event.preventDefault()">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Your name"
-                    [ngModel]="newComment[post.id]?.author || ''" (ngModelChange)="updateCommentAuthor(post.id, $event)"
-                    [name]="'author_'+post.id">
-                </div>
-                <div class="form-group">
-                  <textarea class="form-control" rows="2" placeholder="Your comment"
-                    [ngModel]="newComment[post.id]?.message || ''"
-                    (ngModelChange)="updateCommentMessage(post.id, $event)" [name]="'message_'+post.id"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary btn-sm">Submit Comment</button>
-              </form>
-            </div>
-
-            <div class="d-flex align-items-center mb-2">
-              <button *ngIf="currentUser !== post.name" class="btn btn-sm btn-outline-info ms-2"
-                (click)="toggleFollow(post.name)">
-                {{ isFollowing(post.name) ? 'Unfollow' : 'Follow' }}
-              </button>
-
-              <!-- Fixed follower count display -->
-              <span class="badge ms-2">
-                {{ authorFollowerCounts[post.name] || 0 }} follower{{ authorFollowerCounts[post.name] > 1 ? 's' : '' }}
-              </span>
             </div>
           </div>
         </div>
@@ -155,38 +82,14 @@
 
         <div class="pagination text-center mt-4" *ngIf="displayedPosts.length > 0">
           <button class="btn btn-outline-primary" (click)="prevPage()" [disabled]="currentPage === 1">
-            &larr; Previous
+            &larr; قبل
           </button>
           <span class="mx-3">Page {{ currentPage }} of {{ totalPages() || 1 }}</span>
           <button class="btn btn-outline-primary" (click)="nextPage()" [disabled]="currentPage === totalPages()">
-            Next &rarr;
+            بعد &rarr;
           </button>
         </div>
 
-
-
-
-        <!-- مودال نمایش مختصات با نقشه -->
-        <div *ngIf="showCoordinatesModal" class="modal fade show" style="display: block; background: rgba(0,0,0,0.5)">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Location on Map</h5>
-                <button type="button" class="btn-close" (click)="closeCoordinatesModal()"></button>
-              </div>
-              <div class="modal-body">
-                <div id="map-modal" class="map-container" style="height: 400px; width: 100%;"></div>
-                <div class="coordinates-info mt-3">
-                  <p><strong>Latitude:</strong> {{ selectedCoordinates?.lat | number:'1.4-4' }}</p>
-                  <p><strong>Longitude:</strong> {{ selectedCoordinates?.lng | number:'1.4-4' }}</p>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="closeCoordinatesModal()">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>
