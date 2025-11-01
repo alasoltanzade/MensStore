@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { PostService } from "../../../post.service";
 import { Post } from "../../../model/post.model";
 import { PostComment } from "../../../model/comment.model";
@@ -27,16 +27,21 @@ export class TestimonialsComponent implements OnInit {
   newComment: { [key: number]: { author: string; message: string } } = {};
   allComments: PostComment[] = [];
   isLoading = true;
+  selectedCategory: string | null = null;
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private postService: PostService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.currentUser = localStorage.getItem("username")!;
-    this.loadData();
+    this.route.queryParams.subscribe(params => {
+      this.selectedCategory = params['category'] || null;
+      this.loadData();
+    });
   }
 
   async loadData() {
@@ -67,8 +72,7 @@ export class TestimonialsComponent implements OnInit {
       }
     });
 
-    this.displayedPosts = [...this.posts];
-    this.updatePagedPosts();
+    this.filterPostsByCategory();
   }
 
   isPostOwner(post: Post): boolean {
@@ -162,17 +166,20 @@ export class TestimonialsComponent implements OnInit {
   }
 
   searchPosts(searchTerm: string) {
-    if (!searchTerm) {
-      this.displayedPosts = [...this.posts];
-    } else {
+    let filtered = this.selectedCategory 
+      ? this.posts.filter(post => post.category === this.selectedCategory)
+      : [...this.posts];
+
+    if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      this.displayedPosts = this.posts.filter(
+      filtered = filtered.filter(
         (post) =>
           post.instrument.toLowerCase().includes(term) ||
           post.description.toLowerCase().includes(term) ||
           (post.name && post.name.toLowerCase().includes(term))
       );
     }
+    this.displayedPosts = filtered;
     this.currentPage = 1;
     this.updatePagedPosts();
   }
@@ -217,5 +224,33 @@ export class TestimonialsComponent implements OnInit {
       this.newComment[postId] = { author: "", message: "" };
     }
     this.newComment[postId].message = value;
+  }
+
+  getPostsByCategory(category: string): Post[] {
+    if (this.selectedCategory) {
+      // اگر category خاصی انتخاب شده، فقط پست‌های آن category را نمایش می‌دهیم
+      return this.displayedPosts.filter(post => post.category === category);
+    } else {
+      // اگر هیچ category خاصی انتخاب نشده، همه پست‌های آن category را از posts نمایش می‌دهیم
+      return this.posts.filter(post => post.category === category);
+    }
+  }
+
+  getCategories(): string[] {
+    if (this.selectedCategory) {
+      return [this.selectedCategory];
+    }
+    // همیشه سه دسته اصلی را نمایش می‌دهیم، حتی اگر پستی با آن دسته نباشد
+    return ['پوشاک مردانه', 'کفش', 'اکسسوری مردانه'];
+  }
+
+  filterPostsByCategory() {
+    if (this.selectedCategory) {
+      this.displayedPosts = this.posts.filter(post => post.category === this.selectedCategory);
+    } else {
+      this.displayedPosts = [...this.posts];
+    }
+    this.currentPage = 1;
+    this.updatePagedPosts();
   }
 }

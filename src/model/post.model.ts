@@ -7,6 +7,7 @@ export interface Post {
   date: string;
   name: string;
   imageUrl?: string;
+  category?: string;
 }
 
 export interface Like {

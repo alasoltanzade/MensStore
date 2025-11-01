@@ -31,13 +31,14 @@
         </p>
 
         <!-- Reactive Form -->
-        <form [formGroup]="postForm" (ngSubmit)="addPost()" class="row p-4 gap-5">
+        <form [formGroup]="postForm" (ngSubmit)="addPost()" class="row p-4 gap-4">
           <!-- instrument -->
-          <div class="form-group">
-            <input type="text" class="form-control rounded-0" placeholder="اسم محصول" formControlName="instrument"
+          <div class="form-group col-12 col-md-6">
+            <label class="form-label mb-2">نام محصول <span class="text-danger">*</span></label>
+            <input type="text" class="form-control rounded-0" placeholder="نام محصول" formControlName="instrument"
               [ngClass]="{'is-invalid': instrumentControl.invalid && instrumentControl.touched}">
 
-            <div *ngIf="instrumentControl.invalid && instrumentControl.touched" class="invalid-feedback">
+            <div *ngIf="instrumentControl.invalid && instrumentControl.touched" class="invalid-feedback d-block">
               <div *ngIf="instrumentControl.hasError('required')">
                 نام محصول الزامی است
               </div>
@@ -47,12 +48,50 @@
             </div>
           </div>
 
+          <!-- category -->
+          <div class="form-group col-12 col-md-6">
+            <label class="form-label mb-2">دسته‌بندی <span class="text-danger">*</span></label>
+            <select class="form-control rounded-0" formControlName="category"
+              [ngClass]="{'is-invalid': categoryControl.invalid && categoryControl.touched}">
+              <option value="">انتخاب دسته‌بندی</option>
+              <option value="پوشاک مردانه">پوشاک مردانه</option>
+              <option value="کفش">کفش</option>
+              <option value="اکسسوری مردانه">اکسسوری مردانه</option>
+            </select>
+
+            <div *ngIf="categoryControl.invalid && categoryControl.touched" class="invalid-feedback d-block">
+              <div *ngIf="categoryControl.hasError('required')">
+                انتخاب دسته‌بندی الزامی است
+              </div>
+            </div>
+          </div>
+
+          <!-- year (price) -->
+          <div class="form-group col-12 col-md-6">
+            <label class="form-label mb-2">قیمت (تومان) <span class="text-danger">*</span></label>
+            <input type="number" class="form-control rounded-0" placeholder="قیمت به تومان" formControlName="year"
+              [ngClass]="{'is-invalid': yearControl.invalid && yearControl.touched}">
+
+            <div *ngIf="yearControl.invalid && yearControl.touched" class="invalid-feedback d-block">
+              <div *ngIf="yearControl.hasError('required')">
+                بارگذاری قیمت الزامی است
+              </div>
+              <div *ngIf="yearControl.hasError('min')">
+                قیمت نمی‌تواند منفی باشد
+              </div>
+              <div *ngIf="yearControl.hasError('max')">
+                قیمت بیش از حد مجاز است
+              </div>
+            </div>
+          </div>
+
           <!-- description -->
-          <div class="form-group">
-            <textarea class="form-control rounded-0" placeholder="توضیحات" formControlName="description" rows="3"
+          <div class="form-group col-12">
+            <label class="form-label mb-2">توضیحات محصول <span class="text-danger">*</span></label>
+            <textarea class="form-control rounded-0" placeholder="توضیحات کامل محصول" formControlName="description" rows="4"
               [ngClass]="{'is-invalid': descriptionControl.invalid && descriptionControl.touched}"></textarea>
 
-            <div *ngIf="descriptionControl.invalid && descriptionControl.touched" class="invalid-feedback">
+            <div *ngIf="descriptionControl.invalid && descriptionControl.touched" class="invalid-feedback d-block">
               <div *ngIf="descriptionControl.hasError('required')">
                 توضیحات الزامی است
               </div>
@@ -62,46 +101,29 @@
             </div>
           </div>
 
-          <!-- year -->
-          <div class="form-group">
-            <input type="number" class="form-control rounded-0" placeholder="قیمت" formControlName="year"
-              [ngClass]="{'is-invalid': yearControl.invalid && yearControl.touched}">
-
-            <div *ngIf="yearControl.invalid && yearControl.touched" class="invalid-feedback">
-              <div *ngIf="yearControl.hasError('required')">
-                بارگذاری قیمت الزامی است
-              </div>
-              <div *ngIf="yearControl.hasError('min')">
-                قیمت نمیتواند منفی باشد
-              </div>
-              <div *ngIf="yearControl.hasError('max')">
-                Years cannot be more than 100
-              </div>
-            </div>
+          <!-- upload file -->
+          <div class="form-group col-12">
+            <label class="form-label mb-2">تصویر محصول</label>
+            <p-fileupload name="file" mode="advanced" customUpload="true" (uploadHandler)="onUpload($event)" accept="image/*"
+              maxFileSize="2000000">
+              <ng-template #empty>
+                <div class="text-center p-3">
+                  <i class="pi pi-cloud-upload" style="font-size: 2rem;"></i>
+                  <p class="mt-2">برای آپلود، فایل را بکشید و اینجا رها کنید یا کلیک کنید</p>
+                </div>
+              </ng-template>
+            </p-fileupload>
           </div>
 
-          <!-- upload file -->
-          <p-fileupload name="file" mode="advanced" customUpload="true" (uploadHandler)="onUpload($event)" accept="image/*"
-            maxFileSize="2000000">
-            <ng-template #empty>
-              <div>برای آپلود، فایل‌ها را بکشید و اینجا رها کنید.</div>
-            </ng-template>
-          </p-fileupload>
-
-
-
-
-
-
-          <div class="d-flex align-items-center justify-content-center">
-            <button type="submit" class="btn mt-3 rounded-0 w-50">
-              اضافه کردن
+          <div class="col-12 d-flex align-items-center justify-content-center mt-4">
+            <button type="submit" class="btn mt-3 rounded-0 w-50" [disabled]="isLoading">
+              <span *ngIf="!isLoading">اضافه کردن محصول</span>
+              <span *ngIf="isLoading">در حال ذخیره...</span>
             </button>
           </div>
         </form>
       </div>
     </div>
-
 
 
 

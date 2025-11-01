@@ -1,5 +1,4 @@
 <div class="position-relative w-100" style="overflow: auto; min-height: 100vh;">
-  <!-- Loading indicator -->
   <div *ngIf="isLoading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -13,7 +12,6 @@
   <div class="container">
     <app-header></app-header>
 
-
     <div class="row" *ngIf="!isLoading">
       <div class="col-12 text-center">
         <div class="sort-div">
@@ -26,71 +24,71 @@
         <input type="text" class="form-control" id="searchInput" placeholder="جست و جو..."
           (input)="searchPosts($any($event.target).value)" />
 
-        <div class="posts">
-          <div *ngFor="let post of pagedPosts" class="post">
-            <div class="d-flex justify-content-between w-100 p-5">
-
-              <div class="d-flex flex-column align-items-center p-4">
-                <img *ngIf="post.imageUrl" [src]="post.imageUrl" class="rounded mb-3"
-                  style="max-width: 400px; border-radius: 12px;" />
-              </div>
-
-
-
-
-              <div class="d-flex align-items-start flex-column">
-                <h1 *ngIf="editingPostId !== post.id">{{ post.instrument }}</h1>
-                <input *ngIf="editingPostId === post.id" type="text" class="form-control mb-2"
-                  [(ngModel)]="tempPost.instrument" />
-
-                <p *ngIf="editingPostId !== post.id">{{ post.description }}</p>
-                <textarea *ngIf="editingPostId === post.id" class="form-control mb-2" rows="3"
-                  [(ngModel)]="tempPost.description"></textarea>
-
-                <span *ngIf="editingPostId !== post.id">قیمت: {{ post.year }} تومان</span>
-                <div *ngIf="editingPostId === post.id" class="form-group w-100 mb-2">
-                  <input type="number" class="form-control" placeholder="قیمت (تومان)" [(ngModel)]="tempPost.year" />
-                </div>
-                <span>{{ post.date | date:'medium' }}</span>
-
-                <div class="d-flex flex-column mb-2">
-
-                  <button *ngIf="isPostOwner(post) && editingPostId !== post.id" class="btn btn-sm btn-outline-primary"
-                    (click)="startEditing(post)"> Edit </button>
-
-                  <!-- Fixed saveEdit call (removed parameter) -->
-                  <button *ngIf="isPostOwner(post) && editingPostId === post.id"
-                    class="btn btn-sm btn-outline-primary my-4" (click)="saveEdit()"> Save </button>
-
-                  <button *ngIf="isPostOwner(post) && editingPostId === post.id"
-                    class="btn btn-sm btn-outline-primary my-4" (click)="cancelEdit()"> Cancel </button>
-
-                  <button *ngIf="isPostOwner(post)" class="btn btn-sm btn-outline-primary my-4"
-                    (click)="deletePost(post.id)"> Delete
-                  </button>
+        <div class="categories-container">
+          <div *ngFor="let category of getCategories()" class="category-section">
+            <h2 class="category-title">{{ category }}</h2>
+            <div class="products-grid">
+              <div *ngFor="let post of getPostsByCategory(category)" class="product-card">
+                <div class="product-image-wrapper">
+                  <img *ngIf="post.imageUrl" [src]="post.imageUrl" class="product-image" alt="{{ post.instrument }}" />
+                  <div *ngIf="!post.imageUrl" class="product-image-placeholder">
+                    <span>بدون تصویر</span>
+                  </div>
                 </div>
 
+                <div class="product-info">
+                  <h3 *ngIf="editingPostId !== post.id" class="product-title">{{ post.instrument }}</h3>
+                  <input *ngIf="editingPostId === post.id" type="text" class="form-control mb-2"
+                    [(ngModel)]="tempPost.instrument" />
+
+                  <p *ngIf="editingPostId !== post.id" class="product-description">{{ post.description }}</p>
+                  <textarea *ngIf="editingPostId === post.id" class="form-control mb-2" rows="3"
+                    [(ngModel)]="tempPost.description"></textarea>
+
+                  <div class="product-price">
+                    <span *ngIf="editingPostId !== post.id" class="price-label">قیمت: </span>
+                    <span *ngIf="editingPostId !== post.id" class="price-value">{{ post.year | number }} تومان</span>
+                    <div *ngIf="editingPostId === post.id" class="form-group w-100 mb-2">
+                      <input type="number" class="form-control" placeholder="قیمت (تومان)"
+                        [(ngModel)]="tempPost.year" />
+                    </div>
+                  </div>
+
+                  <div class="product-date">
+                    <span>{{ post.date | date:'short' }}</span>
+                  </div>
+
+                  <div class="product-actions" *ngIf="isPostOwner(post)">
+                    <button *ngIf="editingPostId !== post.id" class="btn-action btn-edit" (click)="startEditing(post)">
+                      ویرایش
+                    </button>
+
+                    <button *ngIf="editingPostId === post.id" class="btn-action btn-save" (click)="saveEdit()">
+                      ذخیره
+                    </button>
+
+                    <button *ngIf="editingPostId === post.id" class="btn-action btn-cancel" (click)="cancelEdit()">
+                      لغو
+                    </button>
+
+                    <button *ngIf="editingPostId !== post.id" class="btn-action btn-delete"
+                      (click)="deletePost(post.id)">
+                      حذف
+                    </button>
+                  </div>
+                </div>
               </div>
 
+              <div *ngIf="getPostsByCategory(category).length === 0" class="empty-category">
+                <p>هیچ محصولی در این دسته‌بندی وجود ندارد</p>
+              </div>
             </div>
           </div>
+
+          <div *ngIf="getCategories().length === 0 && displayedPosts.length === 0" class="alert alert-info mt-4">
+            هیچ پستی یافت نشد. اولین نفری باشید که محصول اضافه می‌کند!
+          </div>
         </div>
-
-        <div *ngIf="displayedPosts.length === 0" class="alert alert-info mt-4">
-          No posts found. Be the first to create one!
-        </div>
-
-        <div class="pagination text-center mt-4" *ngIf="displayedPosts.length > 0">
-          <button class="btn btn-outline-primary" (click)="prevPage()" [disabled]="currentPage === 1">
-            &larr; قبل
-          </button>
-          <span class="mx-3">Page {{ currentPage }} of {{ totalPages() || 1 }}</span>
-          <button class="btn btn-outline-primary" (click)="nextPage()" [disabled]="currentPage === totalPages()">
-            بعد &rarr;
-          </button>
-        </div>
-
-
       </div>
     </div>
   </div>

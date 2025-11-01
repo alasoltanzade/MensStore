@@ -2,10 +2,21 @@
   width: 75px;
   height: 75px;
   padding: 10px;
+  transition: transform 0.3s ease;
+  border-radius: 12px;
+
+  &:hover {
+    transform: scale(1.1) rotate(5deg);
+  }
 }
 
 .tm-bg-white {
-  background-color: rgb(255, 255, 255);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  margin-bottom: 20px;
 }
 
 .tm-brand-container {
@@ -13,21 +24,46 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .tm-brand-texts {
   display: flex;
- }
+  align-items: center;
+  gap: 15px;
+  animation: fadeIn 1s ease;
+}
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
 .tm-brand-name {
   font-size: 2.3rem;
-  color: #333333;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  text-shadow: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
 }
 
 .tm-navbar {
   min-height: 120px;
   justify-content: none;
+  background: transparent;
 }
 
 .tm-navbar .navbar-nav {
@@ -35,6 +71,38 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
+  gap: 10px;
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+  padding: 15px 25px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #2d3748;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transition: left 0.3s ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    color: white;
+    transform: translateY(-2px);
+
+    &::before {
+      left: 0;
+    }
+  }
 }
 
 .tm-nav {
@@ -43,36 +111,95 @@
 
 .nav-item {
   position: relative;
+  transition: transform 0.3s ease;
+}
+
+.nav-item:hover {
+  transform: translateY(-2px);
 }
 
 .nav-link {
   font-size: 1.2rem;
+  transition: all 0.3s ease;
 }
-
 
 .nav-item .tm-nav-link-highlight {
   visibility: hidden;
+  transition: all 0.3s ease;
 }
 
 .nav-item:hover .tm-nav-link-highlight,
 .nav-item.active .tm-nav-link-highlight {
   visibility: visible;
+  animation: bounceIn 0.5s ease;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .nav-item .nav-link {
-  border-top: 1px solid transparent;
+  border-top: 2px solid transparent;
+  transition: all 0.3s ease;
 }
 
 .nav-item.active .nav-link,
 .nav-item:hover .nav-link {
-  border-top-color: #666768;
+  border-top-color: #667eea;
+}
+
+.nav-item.active .nav-link {
+  color: #667eea;
+  font-weight: 700;
 }
 
 .tm-nav-link-highlight {
-  width: 16px;
-  height: 16px;
-  background-color: #666768;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: absolute;
-  top: -8px;
-  left: calc(50% - 8px);
+  top: -10px;
+  left: calc(50% - 10px);
+  border-radius: 50%;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+@media (max-width: 768px) {
+  .tm-navbar .navbar-nav {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .navbar-expand-lg .navbar-nav .nav-link {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .tm-brand-name {
+    font-size: 1.8rem;
+  }
+
+  .tm-bg-white {
+    padding: 10px;
+  }
 }

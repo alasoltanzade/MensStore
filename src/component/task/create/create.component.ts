@@ -58,8 +58,9 @@ export class CreateComponent implements OnInit {
   private initForm() {
     this.postForm = this.fb.group({
       instrument: ["", [Validators.required, Validators.minLength(2)]],
-      description: ["", [Validators.required, Validators.minLength(6)]],
-      year: ["", [Validators.required, Validators.min(0), Validators.max(100)]],
+      description: ["", [Validators.required, Validators.minLength(10)]],
+      year: ["", [Validators.required, Validators.min(0), Validators.max(100000000)]],
+      category: ["", [Validators.required]],
     });
   }
 
@@ -72,6 +73,9 @@ export class CreateComponent implements OnInit {
   }
   get yearControl(): AbstractControl {
     return this.postForm.get("year")!;
+  }
+  get categoryControl(): AbstractControl {
+    return this.postForm.get("category")!;
   }
 
   addPost() {
@@ -91,16 +95,28 @@ export class CreateComponent implements OnInit {
       imageUrl: this.uploadedImageUrl,
       id: 0,
       name: "",
+      category: this.postForm.value.category,
     };
 
     this.postService.createPost(newPost).subscribe({
       next: () => {
+        this.messageService.add({
+          severity: "success",
+          summary: "موفق",
+          detail: "محصول با موفقیت اضافه شد.",
+        });
         this.postForm.reset();
+        this.uploadedImageUrl = "";
         this.loadUserStats();
         this.isLoading = false;
       },
       error: (err) => {
         console.error("Post creation failed!", err);
+        this.messageService.add({
+          severity: "error",
+          summary: "خطا",
+          detail: "خطا در اضافه کردن محصول. لطفا دوباره تلاش کنید.",
+        });
         this.isLoading = false;
       },
     });
