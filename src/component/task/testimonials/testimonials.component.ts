@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { PostService } from "../../../post.service";
+import { CartService } from "../../../cart.service";
 import { Post } from "../../../model/post.model";
 import { ChangeDetectorRef } from "@angular/core";
 import { HeaderComponent } from "../../header/header.component";
@@ -32,6 +33,7 @@ export class TestimonialsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private postService: PostService,
+    private cartService: CartService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -219,5 +221,13 @@ export class TestimonialsComponent implements OnInit {
     }
     this.currentPage = 1;
     this.updatePagedPosts();
+  }
+
+  addToCart(post: Post): void {
+    this.cartService.addToCart(post);
+  }
+
+  isInCart(postId: number): boolean {
+    return this.cartService.isInCart(postId);
   }
 }

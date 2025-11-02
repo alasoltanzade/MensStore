@@ -1,0 +1,98 @@
+<div class="all-contain position-relative w-100" style="overflow: auto; min-height: 100vh;">
+  <div class="bg-container bg-img"></div>
+  <app-header></app-header>
+
+  <div class="container">
+    <div class="row" *ngIf="cartItems.length > 0">
+      <div class="col-12">
+        <div class="cart-header">
+          <h1 class="cart-title">سبد خرید</h1>
+          <button class="btn-clear" (click)="clearCart()">
+            <i class="fas fa-trash"></i>
+            پاک کردن سبد خرید
+          </button>
+        </div>
+
+        <div class="cart-items">
+          <div *ngFor="let item of cartItems" class="cart-item">
+            <div class="item-image">
+              <img *ngIf="item.post.imageUrl" [src]="item.post.imageUrl" [alt]="item.post.instrument" />
+              <div *ngIf="!item.post.imageUrl" class="image-placeholder">
+                <i class="fas fa-image"></i>
+              </div>
+            </div>
+
+            <div class="item-info">
+              <h3 class="item-title">{{ item.post.instrument }}</h3>
+              <p class="item-description">{{ item.post.description }}</p>
+              <div class="item-category">
+                <span>دسته‌بندی: {{ item.post.category }}</span>
+              </div>
+            </div>
+
+            <div class="item-quantity">
+              <label>تعداد:</label>
+              <div class="quantity-controls">
+                <button class="btn-quantity" (click)="updateQuantity(item, item.quantity - 1)">-</button>
+                <input 
+                  type="number" 
+                  [value]="item.quantity" 
+                  min="1"
+                  (change)="updateQuantity(item, +$any($event.target).value)"
+                  class="quantity-input" />
+                <button class="btn-quantity" (click)="updateQuantity(item, item.quantity + 1)">+</button>
+              </div>
+            </div>
+
+            <div class="item-price">
+              <div class="price-per-item">
+                {{ item.post.year | number }} تومان
+              </div>
+              <div class="price-total">
+                مجموع: {{ (item.post.year * item.quantity) | number }} تومان
+              </div>
+            </div>
+
+            <div class="item-actions">
+              <button class="btn-remove" (click)="removeItem(item.post.id)">
+                <i class="fas fa-times"></i>
+                حذف
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="cart-summary">
+          <div class="summary-card">
+            <div class="summary-row">
+              <span class="summary-label">تعداد کل آیتم‌ها:</span>
+              <span class="summary-value">{{ totalItems }}</span>
+            </div>
+            <div class="summary-row total">
+              <span class="summary-label">مجموع کل:</span>
+              <span class="summary-value">{{ totalPrice | number }} تومان</span>
+            </div>
+            <button class="btn-checkout">
+              <i class="fas fa-check"></i>
+              تسویه حساب
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="cartItems.length === 0">
+      <div class="col-12">
+        <div class="empty-cart">
+          <i class="fas fa-shopping-cart"></i>
+          <h2>سبد خرید شما خالی است</h2>
+          <p>برای افزودن محصول به سبد خرید، از صفحه محصولات اقدام کنید.</p>
+          <a routerLink="/testimonials" class="btn-shop">مشاهده محصولات</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+</div>
+

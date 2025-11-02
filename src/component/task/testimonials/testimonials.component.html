@@ -53,6 +53,14 @@
                     <span>{{ post.date | date:'short' }}</span>
                   </div>
 
+                  <div class="product-cart-action">
+                    <button class="btn-action btn-cart" (click)="addToCart(post)" [disabled]="isInCart(post.id)">
+                      <i *ngIf="!isInCart(post.id)" class="fas fa-shopping-cart"></i>
+                      <span *ngIf="!isInCart(post.id)">افزودن به سبد خرید</span>
+                      <span *ngIf="isInCart(post.id)">✓ در سبد خرید</span>
+                    </button>
+                  </div>
+
                   <div class="product-actions" *ngIf="isPostOwner(post)">
                     <button *ngIf="editingPostId !== post.id" class="btn-action btn-edit" (click)="startEditing(post)">
                       ویرایش
