@@ -9,8 +9,3 @@ export interface Post {
   imageUrl?: string;
   category?: string;
 }
-
-export interface Like {
-  count: number;
-  users: string[];
-}

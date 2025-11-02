@@ -4,14 +4,14 @@ import { FormsModule } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { PostService } from "../../../post.service";
 import { Post } from "../../../model/post.model";
-import { PostComment } from "../../../model/comment.model";
 import { ChangeDetectorRef } from "@angular/core";
 import { HeaderComponent } from "../../header/header.component";
+import { FooterComponent } from "../../footer/footer.component";
 
 @Component({
   selector: "app-testimonials",
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, FooterComponent],
   templateUrl: "./testimonials.component.html",
   styleUrls: ["./testimonials.component.scss"],
 })
@@ -25,7 +25,6 @@ export class TestimonialsComponent implements OnInit {
   tempPost: Partial<Post> = {};
   currentUser: string | null = null;
   newComment: { [key: number]: { author: string; message: string } } = {};
-  allComments: PostComment[] = [];
   isLoading = true;
   selectedCategory: string | null = null;
 
@@ -38,8 +37,8 @@ export class TestimonialsComponent implements OnInit {
 
   ngOnInit() {
     this.currentUser = localStorage.getItem("username")!;
-    this.route.queryParams.subscribe(params => {
-      this.selectedCategory = params['category'] || null;
+    this.route.queryParams.subscribe((params) => {
+      this.selectedCategory = params["category"] || null;
       this.loadData();
     });
   }
@@ -52,14 +51,10 @@ export class TestimonialsComponent implements OnInit {
         name: post.username,
       }));
 
-      const commentsResponse = await this.postService.getComments().toPromise();
-      this.allComments = (commentsResponse as PostComment[]) || [];
-
       this.initializeDisplay();
     } catch (error) {
       console.error("Failed to load data", error);
       this.posts = [];
-      this.allComments = [];
     } finally {
       this.isLoading = false;
     }
@@ -115,9 +110,6 @@ export class TestimonialsComponent implements OnInit {
       this.displayedPosts = this.displayedPosts.filter(
         (post) => post.id !== postId
       );
-      this.allComments = this.allComments.filter(
-        (comment) => comment.postId !== postId
-      );
 
       this.updatePagedPosts();
     } catch (error) {
@@ -140,34 +132,9 @@ export class TestimonialsComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  getComments(postId: number): PostComment[] {
-    return this.allComments.filter((comment) => comment.postId === postId);
-  }
-
-  async addComment(post: Post) {
-    if (!post.id) return;
-
-    const commentData: PostComment = {
-      postId: post.id,
-      name: this.newComment[post.id].author || "Anonymous",
-      message: this.newComment[post.id].message,
-      date: new Date().toISOString(),
-    };
-
-    try {
-      const newComment = await this.postService
-        .addComment(commentData)
-        .toPromise();
-      this.allComments.push(newComment as PostComment);
-      this.newComment[post.id] = { author: "", message: "" };
-    } catch (error) {
-      console.error("Failed to add comment", error);
-    }
-  }
-
   searchPosts(searchTerm: string) {
-    let filtered = this.selectedCategory 
-      ? this.posts.filter(post => post.category === this.selectedCategory)
+    let filtered = this.selectedCategory
+      ? this.posts.filter((post) => post.category === this.selectedCategory)
       : [...this.posts];
 
     if (searchTerm) {
@@ -228,11 +195,9 @@ export class TestimonialsComponent implements OnInit {
 
   getPostsByCategory(category: string): Post[] {
     if (this.selectedCategory) {
-      // اگر category خاصی انتخاب شده، فقط پست‌های آن category را نمایش می‌دهیم
-      return this.displayedPosts.filter(post => post.category === category);
+      return this.displayedPosts.filter((post) => post.category === category);
     } else {
-      // اگر هیچ category خاصی انتخاب نشده، همه پست‌های آن category را از posts نمایش می‌دهیم
-      return this.posts.filter(post => post.category === category);
+      return this.posts.filter((post) => post.category === category);
     }
   }
 
@@ -240,13 +205,14 @@ export class TestimonialsComponent implements OnInit {
     if (this.selectedCategory) {
       return [this.selectedCategory];
     }
-    // همیشه سه دسته اصلی را نمایش می‌دهیم، حتی اگر پستی با آن دسته نباشد
-    return ['پوشاک مردانه', 'کفش', 'اکسسوری مردانه'];
+    return ["پوشاک مردانه", "کفش", "اکسسوری مردانه"];
   }
 
   filterPostsByCategory() {
     if (this.selectedCategory) {
-      this.displayedPosts = this.posts.filter(post => post.category === this.selectedCategory);
+      this.displayedPosts = this.posts.filter(
+        (post) => post.category === this.selectedCategory
+      );
     } else {
       this.displayedPosts = [...this.posts];
     }

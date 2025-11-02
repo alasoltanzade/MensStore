@@ -1,9 +1,9 @@
-<div class="position-relative w-100" style="overflow: auto; min-height: 100vh;">
+<div class="all-contain position-relative w-100" style="overflow: auto; min-height: 100vh;">
   <div class="bg-container bg-img">
   </div>
+  <app-header></app-header>
 
   <div class="container">
-    <app-header></app-header>
 
 
 
@@ -13,7 +13,6 @@
       <div class="d-flex align-items-center">
 
         <div class="mx-4 text-center">
-          <div class="fw-bold">{{ userStats.postCount }}</div>
           <div>تعداد پست های بارگذاری شده</div>
         </div>
       </div>
@@ -88,8 +87,8 @@
           <!-- description -->
           <div class="form-group col-12">
             <label class="form-label mb-2">توضیحات محصول <span class="text-danger">*</span></label>
-            <textarea class="form-control rounded-0" placeholder="توضیحات کامل محصول" formControlName="description" rows="4"
-              [ngClass]="{'is-invalid': descriptionControl.invalid && descriptionControl.touched}"></textarea>
+            <textarea class="form-control rounded-0" placeholder="توضیحات کامل محصول" formControlName="description"
+              rows="4" [ngClass]="{'is-invalid': descriptionControl.invalid && descriptionControl.touched}"></textarea>
 
             <div *ngIf="descriptionControl.invalid && descriptionControl.touched" class="invalid-feedback d-block">
               <div *ngIf="descriptionControl.hasError('required')">
@@ -104,8 +103,8 @@
           <!-- upload file -->
           <div class="form-group col-12">
             <label class="form-label mb-2">تصویر محصول</label>
-            <p-fileupload name="file" mode="advanced" customUpload="true" (uploadHandler)="onUpload($event)" accept="image/*"
-              maxFileSize="2000000">
+            <p-fileupload name="file" mode="advanced" customUpload="true" (uploadHandler)="onUpload($event)"
+              accept="image/*" maxFileSize="2000000">
               <ng-template #empty>
                 <div class="text-center p-3">
                   <i class="pi pi-cloud-upload" style="font-size: 2rem;"></i>
@@ -124,9 +123,6 @@
         </form>
       </div>
     </div>
-
-
-
 
   </div>
 

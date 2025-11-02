@@ -4,8 +4,6 @@ import { map, tap } from "rxjs/operators";
 import { environment } from "./environment";
 import { Observable, of } from "rxjs";
 import { Post } from "./model/post.model";
-import { UserStats } from "./model/user-stats.model";
-import { PostComment } from "./model/comment.model";
 import { Router } from "@angular/router";
 
 @Injectable({ providedIn: "root" })
@@ -27,10 +25,6 @@ export class PostService {
 
   createPost(post: Post): Observable<Post> {
     return this.http.post<Post>(`${this.apiUrl}/posts`, post);
-  }
-
-  getUserStats(username: string): Observable<UserStats> {
-    return this.http.get<UserStats>(`${this.apiUrl}/stats/${username}`);
   }
 
   // Post methods
@@ -68,15 +62,6 @@ export class PostService {
       { username },
       { headers: this.getAuthHeaders() }
     );
-  }
-
-  // Comment methods
-  getComments(): Observable<PostComment[]> {
-    return this.http.get<PostComment[]>(`${this.apiUrl}/comments`);
-  }
-
-  addComment(comment: PostComment): Observable<PostComment> {
-    return this.http.post<PostComment>(`${this.apiUrl}/comments`, comment);
   }
 
   // Follow methods

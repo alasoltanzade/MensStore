@@ -8,12 +8,11 @@ import {
 import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { PostService } from "../../../post.service";
-import { UserStats } from "../../../model/user-stats.model";
 import { Post } from "../../../model/post.model";
 import { Router } from "@angular/router";
 import { HeaderComponent } from "../../header/header.component";
 import { MessageService } from "primeng/api";
-import { FileUpload, FileUploadEvent } from "primeng/fileupload";
+import { FileUpload } from "primeng/fileupload";
 import { ToastModule } from "primeng/toast";
 
 @Component({
@@ -33,11 +32,6 @@ import { ToastModule } from "primeng/toast";
 export class CreateComponent implements OnInit {
   uploadedFiles: any[] = [];
   username: string = "";
-  userStats: UserStats = {
-    postCount: 0,
-    followers: 0,
-    following: 0,
-  };
   postForm!: FormGroup;
   isLoading = false;
   uploadedImageUrl: string = "";
@@ -52,14 +46,16 @@ export class CreateComponent implements OnInit {
   ngOnInit() {
     this.username = localStorage.getItem("username") || "";
     this.initForm();
-    this.loadUserStats();
   }
 
   private initForm() {
     this.postForm = this.fb.group({
       instrument: ["", [Validators.required, Validators.minLength(2)]],
       description: ["", [Validators.required, Validators.minLength(10)]],
-      year: ["", [Validators.required, Validators.min(0), Validators.max(100000000)]],
+      year: [
+        "",
+        [Validators.required, Validators.min(0), Validators.max(100000000)],
+      ],
       category: ["", [Validators.required]],
     });
   }
@@ -107,7 +103,6 @@ export class CreateComponent implements OnInit {
         });
         this.postForm.reset();
         this.uploadedImageUrl = "";
-        this.loadUserStats();
         this.isLoading = false;
       },
       error: (err) => {
@@ -120,26 +115,6 @@ export class CreateComponent implements OnInit {
         this.isLoading = false;
       },
     });
-  }
-
-  loadUserStats() {
-    this.postService.getUserStats(this.username).subscribe({
-      next: (stats: UserStats) => {
-        this.userStats = {
-          postCount: stats.postCount ?? 0,
-          followers: stats.followers ?? 0,
-          following: stats.following ?? 0,
-        };
-      },
-      error: (err) => {
-        console.error("Failed to load user stats", err);
-        this.resetUserStats();
-      },
-    });
-  }
-
-  private resetUserStats() {
-    this.userStats = { postCount: 0, followers: 0, following: 0 };
   }
 
   logout(): void {
@@ -171,7 +146,6 @@ export class CreateComponent implements OnInit {
 
     reader.onload = () => {
       this.uploadedImageUrl = reader.result as string;
-      console.log("📸 Image URL (Base64):", this.uploadedImageUrl);
 
       this.messageService.add({
         severity: "success",

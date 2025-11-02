@@ -8,6 +8,10 @@
   overflow: hidden;
 }
 
+.all-contain {
+  font-family: 'Amiri', 'Vazir', serif;
+}
+
 .container {
   font-family: 'Amiri', 'Vazir', serif;
   position: relative;
@@ -27,9 +31,11 @@
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -90,6 +96,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -120,6 +127,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -180,12 +188,16 @@
 }
 
 @keyframes shake {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-10px);
   }
+
   75% {
     transform: translateX(10px);
   }

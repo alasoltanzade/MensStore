@@ -1,54 +1,67 @@
-<div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="card">
-    <div class="row">
-      <div class="col-6">
-        <img src="task/fms-login.png" class="mx-4">
+<div class="login-wrapper">
+  <div class="bg-container bg-img"></div>
+  
+  <div class="login-container">
+    <div class="login-card">
+      <!-- لوگو و عنوان -->
+      <div class="login-header">
+        <img src="/logo.png" alt="لوگو" class="logo-img">
+        <h1 class="login-title">استایل من</h1>
+        <p class="login-subtitle">فروشگاه اینترنتی پوشاک مردانه</p>
       </div>
-      <div class="col-6">
-        <div class="card1 ms-4">
-          <div class="card3">
-            <span class="text1 text-nowrap">سامانه مدیریت ناوگان (FMS)</span>
-            <span>شهرداری شیراز</span>
+
+      <!-- فرم لاگین -->
+      <form [formGroup]="loginForm" (ngSubmit)="navigateToLogin()" class="login-form">
+        <!-- نام کاربری -->
+        <div class="form-group">
+          <label class="form-label">نام کاربری</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              class="form-input" 
+              formControlName="username" 
+              placeholder="نام کاربری خود را وارد کنید"
+              [ngClass]="{'is-invalid': usernameControl.invalid && usernameControl.touched}">
           </div>
-          <form [formGroup]="loginForm" (ngSubmit)="navigateToLogin()" novalidate>
-            <div class="card2">
-              <input type="text" class="input" formControlName="username" required placeholder="نام کاربری"
-                [ngClass]="{'is-invalid': usernameControl.invalid && usernameControl.touched}">
-              <div *ngIf="usernameControl.invalid && usernameControl.touched" class="invalid-feedback">
-                <div *ngIf="usernameControl.hasError('required')">
-                  نام کاربری الزامی است
-                </div>
-              </div>
-              <i class="fas fa-user-alt icon"></i>
-              <input type="password" class="input" formControlName="password" required placeholder="رمز عبور"
-                [ngClass]="{'is-invalid': passwordControl.invalid && passwordControl.touched}">
-              <div *ngIf="passwordControl.invalid && passwordControl.touched" class="invalid-feedback">
-                <div *ngIf="passwordControl.hasError('required')">
-                  رمز عبور الزامی است
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6">
-                  <img src="task/captcha.png" onclick="return oc">
-                </div>
-                <div class="col-6 mb-3">
-                  <input type="text" class="input w-100" formControlName="captcha" placeholder="کد امنیتی"
-                    [ngClass]="{'is-invalid': captchaControl.invalid && captchaControl.touched}">
-                  <div *ngIf="captchaControl.invalid && captchaControl.touched" class="invalid-feedback">
-                    <div *ngIf="captchaControl.hasError('required')">
-                      کد امنیتی الزامی است
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div *ngIf="usernameControl.invalid && usernameControl.touched" class="error-message">
+            <div *ngIf="usernameControl.hasError('required')">
+              نام کاربری الزامی است
             </div>
-            <div class="card2">
-              <button type="submit" class="btnLogin w-100">ورود به سامانه</button>
-              <button type="button" class="btnLogin1 w-100">ورود با احراز هویت مرکزی (SSO)</button>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
+
+        <!-- رمز عبور -->
+        <div class="form-group">
+          <label class="form-label">رمز عبور</label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              class="form-input" 
+              formControlName="password" 
+              placeholder="رمز عبور خود را وارد کنید"
+              [ngClass]="{'is-invalid': passwordControl.invalid && passwordControl.touched}">
+          </div>
+          <div *ngIf="passwordControl.invalid && passwordControl.touched" class="error-message">
+            <div *ngIf="passwordControl.hasError('required')">
+              رمز عبور الزامی است
+            </div>
+          </div>
+        </div>
+
+        <!-- دکمه ورود -->
+        <button type="submit" class="login-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">ورود به سیستم</span>
+          <span *ngIf="isLoading" class="loading">
+            <span class="spinner"></span>
+            در حال ورود...
+          </span>
+        </button>
+
+        <!-- پیام خطا -->
+        <div *ngIf="errorMessage" class="alert-error">
+          {{ errorMessage }}
+        </div>
+      </form>
     </div>
   </div>
 </div>

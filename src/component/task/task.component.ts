@@ -18,6 +18,8 @@ import { HttpClient } from "@angular/common/http";
 })
 export class TaskComponent {
   loginForm: FormGroup;
+  isLoading = false;
+  errorMessage = "";
 
   constructor(
     private fb: FormBuilder,
@@ -27,7 +29,6 @@ export class TaskComponent {
     this.loginForm = this.fb.group({
       username: ["", Validators.required],
       password: ["", Validators.required],
-      captcha: ["", Validators.required],
     });
   }
 
@@ -37,16 +38,16 @@ export class TaskComponent {
   get passwordControl() {
     return this.loginForm.get("password")!;
   }
-  get captchaControl() {
-    return this.loginForm.get("captcha")!;
-  }
 
   navigateToLogin() {
+    this.errorMessage = "";
+    
     if (this.loginForm.valid) {
+      this.isLoading = true;
       const { username, password } = this.loginForm.value;
 
       this.http
-        .get<any[]>("http://localhost:3000/users", {  //درخواست گت به سرور ارسال میشه
+        .get<any[]>("http://localhost:3000/users", {
           params: {
             username: username,
             password: password,
@@ -54,21 +55,24 @@ export class TaskComponent {
         })
         .subscribe({
           next: (users) => {
+            this.isLoading = false;
             if (users.length === 1) {
-              //ذخیره وضعیت لاگین در مرورگر
-              localStorage.setItem("isLoggedIn", "true"); //ثبت وضعیت ورود
-              localStorage.setItem("username", username); // ذخیره نام کاربری
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.setItem("username", username);
+              localStorage.setItem("auth_token", "token_" + Date.now());
               this.router.navigate(["/dashbord"]);
             } else {
-              alert("نام کاربری یا رمز عبور اشتباه است!");
+              this.errorMessage = "نام کاربری یا رمز عبور اشتباه است!";
             }
           },
           error: () => {
-            alert("خطا در ارتباط با سرور!");
+            this.isLoading = false;
+            this.errorMessage = "خطا در ارتباط با سرور! لطفاً دوباره تلاش کنید.";
           },
         });
     } else {
       this.loginForm.markAllAsTouched();
+      this.errorMessage = "لطفاً تمامی فیلدها را پر کنید.";
     }
   }
 }
