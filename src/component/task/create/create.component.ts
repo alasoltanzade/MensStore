@@ -45,6 +45,13 @@ export class CreateComponent implements OnInit {
 
   ngOnInit() {
     this.username = localStorage.getItem("username") || "";
+    
+    // فقط admin می‌تواند به صفحه ایجاد پست دسترسی داشته باشد
+    if (this.username !== "admin") {
+      this.router.navigate(["/dashbord"]);
+      return;
+    }
+    
     this.initForm();
   }
 

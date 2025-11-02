@@ -71,7 +71,8 @@ export class TestimonialsComponent implements OnInit {
   }
 
   isPostOwner(post: Post): boolean {
-    return !!this.currentUser && post.username === this.currentUser;
+    // فقط admin می‌تواند پست‌ها را ویرایش و حذف کند
+    return this.currentUser === "admin";
   }
 
   startEditing(post: Post) {

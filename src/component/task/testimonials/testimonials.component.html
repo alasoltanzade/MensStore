@@ -8,7 +8,7 @@
   <div class="container">
 
     <div class="row" *ngIf="!isLoading">
-      <div class="col-12 text-center">
+      <div class="col-12 ">
         <div class="sort-div">
           <label for="sortByDate">مرتب سازی بر اساس تاریخ:</label>
           <select id="sortByDate" (change)="sortPosts($any($event.target).value)">

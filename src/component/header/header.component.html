@@ -38,7 +38,7 @@
               <a class="nav-link" [routerLink]="['/testimonials']" [queryParams]="{category: 'اکسسوری مردانه'}">اکسسوری مردانه</a>
             </li>
 
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <li *ngIf="isAdmin" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
               <div class="tm-nav-link-highlight"></div>
               <a class="nav-link" [routerLink]="['/create']">افزودن آیتم جدید</a>
             </li>

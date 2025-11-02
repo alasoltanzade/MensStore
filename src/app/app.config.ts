@@ -6,8 +6,6 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from "@angular/common/http";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { AuthInterceptor } from "../auth.interceptor";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,13 +18,5 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptorsFromDi() 
     ),
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true, 
-    },
   ],
 };
-
-// با این تغییرات، اینترسپتور شما به طور خودکار به تمام درخواست‌های HTTP افزوده می‌شود و توکن احراز هویت را به هدرها اضافه می‌کند.
-

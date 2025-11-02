@@ -1,6 +1,5 @@
 import { Routes } from "@angular/router";
-import { authGuard } from "./auth.guard";
-import { loginGuard } from "./login.guard";
+import { adminGuard } from "./admin.guard";
 
 export const routes: Routes = [
   {
@@ -12,7 +11,6 @@ export const routes: Routes = [
     path: "login",
     loadComponent: () =>
       import("./component/task/task.component").then((c) => c.TaskComponent),
-    canActivate: [loginGuard],
   },
   {
     path: "dashbord",
@@ -20,7 +18,6 @@ export const routes: Routes = [
       import("./component/task/dashbord/dashbord.component").then(
         (c) => c.TaskDashbordComponent
       ),
-    canActivate: [authGuard],
   },
   {
     path: "create",
@@ -28,7 +25,7 @@ export const routes: Routes = [
       import("./component/task/create/create.component").then(
         (c) => c.CreateComponent
       ),
-    canActivate: [authGuard],
+    canActivate: [adminGuard],
   },
   {
     path: "testimonials",
@@ -36,15 +33,12 @@ export const routes: Routes = [
       import("./component/task/testimonials/testimonials.component").then(
         (c) => c.TestimonialsComponent
       ),
-    canActivate: [authGuard],
   },
-
   {
     path: "about",
     loadComponent: () =>
       import("./component/task/about/about.component").then(
         (c) => c.AboutComponent
       ),
-    canActivate: [authGuard],
   },
 ];

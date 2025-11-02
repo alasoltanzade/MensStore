@@ -527,33 +527,6 @@
   }
 }
 
-.text-center {
-  padding: 60px 20px;
-  color: white;
-  text-align: center;
-}
-
-.spinner-border {
-  width: 60px;
-  height: 60px;
-  border-width: 5px;
-  border-color: rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.text-center p {
-  margin-top: 20px;
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-}
 
 @media (max-width: 768px) {
   .products-grid {
