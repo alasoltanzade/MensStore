@@ -224,6 +224,13 @@ export class TestimonialsComponent implements OnInit {
   }
 
   addToCart(post: Post): void {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    
+    if (!isLoggedIn) {
+      this.router.navigate(["/login"]);
+      return;
+    }
+    
     this.cartService.addToCart(post);
   }
 

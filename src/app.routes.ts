@@ -1,10 +1,11 @@
 import { Routes } from "@angular/router";
 import { adminGuard } from "./admin.guard";
+import { authGuard } from "./auth.guard";
 
 export const routes: Routes = [
   {
     path: "",
-    redirectTo: "login",
+    redirectTo: "dashbord",
     pathMatch: "full",
   },
   {
@@ -47,5 +48,14 @@ export const routes: Routes = [
       import("./component/task/cart/cart.component").then(
         (c) => c.CartComponent
       ),
+    canActivate: [authGuard],
+  },
+  {
+    path: "payment",
+    loadComponent: () =>
+      import("./component/task/payment/payment.component").then(
+        (c) => c.PaymentComponent
+      ),
+    canActivate: [authGuard],
   },
 ];
